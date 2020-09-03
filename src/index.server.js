@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
-import rootReducer from './modules';
+import rootReducer, {rootSaga} from './modules';
 import PreloadContext from './lib/PreloadContext';
 import {END} from 'redux saga';
 // asset-manifest.json에서 파일 경로들을 조회합니다.
@@ -91,7 +91,7 @@ store.dispatch(END);
     // JSON을 문자열로 변환하고 악성 스크립트가 실행되는 것을 방지하기 위해 <를 치환 처리
   // https://redux.js.org/recipes/server-rendering#security-considerations
   const stateString = JSON.stringify(store.getState()).replace(/</g, '\\u003c');
-  const stateScript = '<script>__PRELOADED_STATE__=${stateString}<\script>';//리덕스 초기상태를 스크립트로 주입합니다.
+  const stateScript = `<script>__PRELOADED_STATE__ = ${stateString}</script>`;//리덕스 초기상태를 스크립트로 주입합니다.
   res.send(createPage(root),stateScript); // 결과물을 응답합니다.
 };
 
